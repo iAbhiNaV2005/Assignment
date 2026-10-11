@@ -1,0 +1,42 @@
+# Environment and secrets (CRITICAL)
+.env
+.env.local
+secrets/
+*.pem
+*.key
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python caches and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+build/
+dist/
+
+# Databases and runtime data
+*.db
+*.sqlite3
+data/cache/
+runs/
+*.eml
+
+# Testing & tool caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Personal notes and local runbooks
+docs/

@@ -1,0 +1,63 @@
+source_note: "Official Upthrust context and positioning provided for the assessment."
+company:
+  name: Upthrust
+  tagline: "We put back soul into marketing"
+  hq: "Austin, TX, US"
+  positioning: >
+    Upthrust is a B2B Marketing Agency that has worked with brands like Dell, QpiAI,
+    VEGA, Acadly, and Coolstra. We helped 31 SaaS companies generate $21.45M in pipeline.
+    A team of architects, strategists, creators, and copywriters delivering design,
+    performance marketing, and AI agents. Accountable to pipeline and revenue.
+sender:
+  name: "Abhinav"
+  title: "Growth Lead"
+  postal_address: "Austin, TX 78701, US"
+  opt_out_line: "If this isn't relevant, reply 'no thanks' and I won't follow up."
+services:
+  - {id: google_ads, label: "Google Ads", phrase: "Google Ads"}
+  - {id: meta_ads, label: "Meta Ads", phrase: "Meta Ads"}
+  - {id: linkedin_ads, label: "LinkedIn Ads", phrase: "LinkedIn Ads"}
+  - {id: seo, label: "SEO", phrase: "SEO"}
+  - {id: ai_search_visibility, label: "AI-search visibility", phrase: "visibility in AI search"}
+  - {id: landing_pages_cro, label: "Landing pages and conversion optimisation", phrase: "landing pages and conversion work"}
+  - {id: creative_growth_strategy, label: "Creative and growth strategy", phrase: "creative and growth strategy"}
+icp:
+  priority_industries: [ecommerce, health_medical, saas_it_services, professional_services]
+  employee_range: [5, 200]
+  revenue_note: "Best fit: small and mid-size businesses, roughly under $20M revenue"
+  geographies: [US, UK, India, Canada, Australia]
+  want_signals:
+    - "Runs or sells online (ecommerce / lead-gen site) but weak conversion setup"
+    - "No or partial ad tracking (no Meta Pixel, no Google Ads conversion tag, no GA4)"
+    - "Thin or broken SEO basics (missing titles, descriptions, schema, H1 problems)"
+    - "Blocks AI crawlers or has no llms.txt while selling to buyers who use AI search"
+    - "Hiring a marketer, launching a product, new location, recent funding"
+  hard_disqualifiers:
+    - is_marketing_agency
+    - enterprise_over_1000
+    - no_commercial_site
+    - directory_or_marketplace
+    - restricted_industry
+scoring:
+  weights: {icp_match: 35, need_signal: 35, reachability: 15, budget_signal: 15}
+  threshold: 65
+  min_evidence_backed_pain_points: 1
+proof_points:
+  - text: "We helped 31 SaaS companies generate $21.45M in pipeline."
+    service_tags: [google_ads, meta_ads, linkedin_ads, landing_pages_cro, creative_growth_strategy]
+    verified: true
+  - text: "We've driven B2B marketing results for brands like Dell, QpiAI, VEGA, Acadly, and Coolstra."
+    service_tags: [google_ads, meta_ads, linkedin_ads, seo, creative_growth_strategy]
+    verified: true
+banned_phrases:
+  - "I hope this email finds you well"
+  - "guarantee"
+  - "guaranteed"
+  - "#1"
+  - "best in class"
+  - "10x"
+  - "game-changer"
+  - "revolutionary"
+  - "act now"
+  - "limited time"
+calendar_link: ""

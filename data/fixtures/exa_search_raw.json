@@ -1,0 +1,214 @@
+[
+  {
+    "id": "https://exa.ai/library/organization/zl8mg2w3c9y",
+    "title": "Wellah Nutrition",
+    "url": "https://wellah.com/",
+    "score": 1,
+    "text": "# Wellah Nutrition\n\nWellah Nutrition is a Wellness and Fitness Services company. Wellah is a company that provides delicious protein powder and supplements formulated with nutrition and science for women. Wellah Nutrition employs 10 people (+150.0% YoY, +6 people), founded in 2024. Headquartered in Lindon, Utah, United States.\n\n## About\n\nWellah is a women-led wellness brand creating juicy, clean supplements that support simple daily habits. From our ingredients to our community, everything we do is designed to help women feel strong, supported, and like they belong. Whether you're starting your fitness journey or leveling up your routine, Wellah is here to make wellness fun, flavorful, and feel-good.\n\n## Company Details\n- Industry: Wellness and Fitness Services\n- Type: Public company\n- Hea",
+    "image": "https://media.licdn.com/dms/image/v2/D560BAQHrzvbZqsNtTQ/company-logo_200_200/B56Zd.pP4_HQAM-/0/1750176431984?e=2147483647&v=beta&t=dzq5lzfoijfujsdm_XKv8lLalE0cGOD-hEV7umGH3EI",
+    "entities": [
+      {
+        "id": "https://exa.ai/library/organization/zl8mg2w3c9y",
+        "type": "company",
+        "version": 1,
+        "properties": {
+          "name": "Wellah Nutrition",
+          "foundedYear": 2024,
+          "description": "Wellah is a women-led wellness brand creating juicy, clean supplements that support simple daily habits. From our ingredients to our community, everything we do is designed to help women feel strong, supported, and like they belong. Whether you're starting your fitness journey or leveling up your routine, Wellah is here to make wellness fun, flavorful, and feel-good.",
+          "workforce": {
+            "total": 10
+          },
+          "headquarters": {
+            "address": "Lindon, UT, US",
+            "city": "Lindon",
+            "postalCode": null,
+            "country": "United States"
+          },
+          "financials": null,
+          "webTraffic": {
+            "visitsMonthly": 140074,
+            "countryRank": 59724,
+            "avgDurationSeconds": 82,
+            "history": [
+              {
+                "value": 62609,
+                "dateFrom": "2026-04",
+                "dateTo": "2026-04"
+              },
+              {
+                "value": 64961,
+                "dateFrom": "2026-05",
+                "dateTo": "2026-05"
+              },
+              {
+                "value": 82935,
+                "dateFrom": "2026-06",
+                "dateTo": "2026-06"
+              },
+              {
+                "value": 79046,
+                "dateFrom": "2026-07",
+                "dateTo": "2026-07"
+              },
+              {
+                "value": 115898,
+                "dateFrom": "2026-08",
+                "dateTo": "2026-08"
+              },
+              {
+                "value": 140074,
+                "dateFrom": "2026-09",
+                "dateTo": "2026-09"
+              }
+            ]
+          },
+          "research": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "https://exa.ai/library/organization/jk4l0c3z9lv",
+    "title": "Ritual",
+    "url": "https://ritual.com/",
+    "score": 0.5,
+    "text": "# Ritual\n\nRitual is a Wellness and Fitness Services company. Ritual is a company that formulates supplements for efficacy. They offer a range of products from university-led clinical studies to patented capsule design. Ritual employs 244 people (+11.9% YoY, +26 people) and has an annual revenue of $20M, founded in 2015. Headquartered in Culver City, California, United States, with offices in Sacramento and Los Angeles. Its workforce is distributed across 7 countries (including United States, South Africa, Canada, Honduras, and India).\n\n## About\n\nRitual is a personal health brand that is building the future of daily essentials. Our mission is simple: we help turn healthy habits into a Ritual. We started by creating the first visible supply chain of its kind and reinventing the daily multivi",
+    "image": "https://media.licdn.com/dms/image/v2/C560BAQFAUE9Y9pDkdg/company-logo_200_200/company-logo_200_200/0/1630632568201/ritual_vitamins_logo?e=2147483647&v=beta&t=gfYsDS3HpIiFbIOPzaV1_5oS3pmwveR-Uv1K-AQe7EE",
+    "entities": [
+      {
+        "id": "https://exa.ai/library/organization/jk4l0c3z9lv",
+        "type": "company",
+        "version": 1,
+        "properties": {
+          "name": "Ritual",
+          "foundedYear": 2015,
+          "description": "Ritual is a personal health brand that is building the future of daily essentials. Our mission is simple: we help turn healthy habits into a Ritual. We started by creating the first visible supply chain of its kind and reinventing the daily multivitamin from the ground up. Now, together with some of the world\u2019s leading scientists, researchers and advisors, we\u2019re developing a new standard of high-quality, traceable daily products across new categories. Hundreds of thousands of customers across generations trust us, and we are growing quickly. \n \nWe\u2019ve built a team of over 120 (and counting) curious skeptics, world-class scientists, unconventional artists, expert marketers, and analytical strategists. We\u2019re venture-backed and based in sunny Los Angeles. If you\u2019re looking to challenge the status quo and be challenged to do the best work of your career, join us.\n\nRitual is an Equal Opportunity Employer. We are are committed to bringing together humans from different backgrounds and perspectives, providing employees with a safe and welcoming work environment free of discrimination and harassment. We strive to create a diverse & inclusive environment where everyone can thrive, feel a sense of belonging, and do impactful work together.",
+          "workforce": {
+            "total": 244
+          },
+          "headquarters": {
+            "address": "3576 Eastham Dr, Culver City, California 90232, US",
+            "city": "Culver City",
+            "postalCode": null,
+            "country": "United States"
+          },
+          "financials": {
+            "revenueAnnual": 20000000,
+            "fundingTotal": 40500000,
+            "fundingLatestRound": {
+              "name": "Series b",
+              "date": "2019-02-05",
+              "amount": 25000000
+            }
+          },
+          "webTraffic": {
+            "visitsMonthly": 777486,
+            "countryRank": 13341,
+            "avgDurationSeconds": 93,
+            "history": [
+              {
+                "value": 927289,
+                "dateFrom": "2026-04",
+                "dateTo": "2026-04"
+              },
+              {
+                "value": 703925,
+                "dateFrom": "2026-05",
+                "dateTo": "2026-05"
+              },
+              {
+                "value": 818454,
+                "dateFrom": "2026-06",
+                "dateTo": "2026-06"
+              },
+              {
+                "value": 905284,
+                "dateFrom": "2026-07",
+                "dateTo": "2026-07"
+              },
+              {
+                "value": 579359,
+                "dateFrom": "2026-08",
+                "dateTo": "2026-08"
+              },
+              {
+                "value": 777486,
+                "dateFrom": "2026-09",
+                "dateTo": "2026-09"
+              }
+            ]
+          },
+          "research": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "https://exa.ai/library/organization/h2mk9q8hv5x",
+    "title": "Black Girl Vitamins",
+    "url": "https://blackgirlvitamins.co/",
+    "score": 0,
+    "text": "# Black Girl Vitamins\n\nBlack Girl Vitamins is a Wellness and Fitness Services company. Black Girl Vitamins is a company that provides complete wellness essentials, including collagen powder, joints, hair, skin, gut, menopause relief, PCOS relief, irregular cycles, facial hair, weight gain, and complete wellness essentials. They offer a wide range of products including bgv collagen powder, supplements, and micronutrients essentials. Black Girl Vitamins employs 44 people (+193.3% YoY, +29 people), founded in 2021. Headquartered in Chicago, Illinois, United States. Its workforce is distributed across 5 countries (including United States, Philippines, Nicaragua, Nigeria, and United Kingdom).\n\n## About\n\nBlack Girl Vitamins (BGV) is a Black-owned health and wellness brand dedicated to improving ",
+    "image": "https://media.licdn.com/dms/image/v2/D560BAQGnUZw_mB0sJA/company-logo_200_200/B56ZxyTP5_KUAM-/0/1771444175248?e=2147483647&v=beta&t=T8AIyyFqXHCqLvsMl0cyW9QIIlkwaezQZVHsi1DXxeM",
+    "entities": [
+      {
+        "id": "https://exa.ai/library/organization/h2mk9q8hv5x",
+        "type": "company",
+        "version": 1,
+        "properties": {
+          "name": "Black Girl Vitamins",
+          "foundedYear": 2021,
+          "description": "Black Girl Vitamins (BGV) is a Black-owned health and wellness brand dedicated to improving health outcomes for Black women. Since launching in 2021, we've partnered with leading experts to formulate science-backed supplements specifically designed to support the health and wellness of Black women.\n\nBeyond supplements, BGV actively uplifts the community through strategic collaborations with medical professionals, a $100,000 scholarship fund supporting women pursuing healthcare careers, and partnerships with organizations dedicated to advancing health and well-being in Black communities. \n\nLearn more at www.blackgirlvitamins.co.",
+          "workforce": {
+            "total": 44
+          },
+          "headquarters": {
+            "address": "Chicago, Illinois, United States",
+            "city": "Chicago",
+            "postalCode": null,
+            "country": "United States"
+          },
+          "financials": null,
+          "webTraffic": {
+            "visitsMonthly": 3178479,
+            "countryRank": 4183,
+            "avgDurationSeconds": 153,
+            "history": [
+              {
+                "value": 1096375,
+                "dateFrom": "2026-04",
+                "dateTo": "2026-04"
+              },
+              {
+                "value": 1320931,
+                "dateFrom": "2026-05",
+                "dateTo": "2026-05"
+              },
+              {
+                "value": 2368199,
+                "dateFrom": "2026-06",
+                "dateTo": "2026-06"
+              },
+              {
+                "value": 3507491,
+                "dateFrom": "2026-07",
+                "dateTo": "2026-07"
+              },
+              {
+                "value": 4235667,
+                "dateFrom": "2026-08",
+                "dateTo": "2026-08"
+              },
+              {
+                "value": 3178479,
+                "dateFrom": "2026-09",
+                "dateTo": "2026-09"
+              }
+            ]
+          },
+          "research": null
+        }
+      }
+    ]
+  }
+]

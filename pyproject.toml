@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "upthrust-outbound-agent"
+version = "0.1.0"
+description = "Upthrust AI Outbound Agent"
+authors = [{ name = "Upthrust Builder" }]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+    "tenacity>=8.2.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.0",
+    "jinja2>=3.1.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "gspread>=6.0.0",
+    "google-auth>=2.20.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "respx>=0.21.0",
+]
+
+[project.scripts]
+agent = "agent.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]

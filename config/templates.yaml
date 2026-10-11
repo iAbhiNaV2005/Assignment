@@ -1,0 +1,106 @@
+shared:
+  cta_options:
+    - "Worth a quick 15-minute chat this week?"
+    - "Open to a short call to see if it's useful?"
+    - "Would it be useful if I sent over what I found?"
+  llm_variables:
+    observation:
+      desc: "ONE complete, specific, neutral sentence about this prospect, fully supported by cited evidence keys. No flattery. No numbers unless present in the evidence."
+      min_chars: 60
+      max_chars: 200
+      evidence_required: true
+    consequence:
+      desc: "ONE complete sentence on what this likely costs them. Hedged wording (likely, probably, may). No invented statistics."
+      min_chars: 50
+      max_chars: 180
+    icp_phrase:
+      desc: "A short plural noun phrase for who they are, e.g. 'ecommerce brands', 'clinics', 'B2B software teams'."
+      max_chars: 40
+
+templates:
+  - id: site_gap
+    name: "Website / conversion gap"
+    service_tags: [landing_pages_cro, creative_growth_strategy]
+    subject: "Quick question about {{ company_name }}'s website"
+    min_words: 60
+    max_words: 140
+    body: |
+      Hi {{ first_name }},
+
+      I spent a few minutes on {{ company_name }}'s website. {{ observation }}
+
+      {{ consequence }}
+
+      Upthrust is a small growth team that fixes this kind of thing for {{ icp_phrase }}: landing pages, conversion tests, and the ad creative that sends people to them.{% if proof_point %} {{ proof_point }}{% endif %}
+
+      {{ cta_question }}
+
+      {{ sender_name }}
+      {{ sender_title }}, Upthrust
+
+  - id: paid_gap
+    name: "Paid ads gap"
+    service_tags: [google_ads, meta_ads, linkedin_ads]
+    subject: "{{ company_name }} and paid ads"
+    min_words: 50
+    max_words: 125
+    extra_llm_variables:
+      ad_channels:
+        desc: "Choose exactly one of the allowed strings."
+        choices: ["Google Ads", "Meta Ads", "LinkedIn Ads", "Google and Meta Ads", "Google and LinkedIn Ads"]
+    body: |
+      Hi {{ first_name }},
+
+      {{ observation }}
+
+      {{ consequence }}
+
+      We run {{ ad_channels }} for {{ icp_phrase }} and judge ourselves on cost per lead and revenue, not clicks.{% if proof_point %} {{ proof_point }}{% endif %}
+
+      {{ cta_question }}
+
+      {{ sender_name }}
+      {{ sender_title }}, Upthrust
+
+  - id: seo_ai
+    name: "SEO and AI-search visibility"
+    service_tags: [seo, ai_search_visibility]
+    subject: "How {{ company_name }} shows up in Google and AI search"
+    min_words: 60
+    max_words: 150
+    body: |
+      Hi {{ first_name }},
+
+      I checked how {{ company_name }} shows up in search. {{ observation }}
+
+      {{ consequence }}
+
+      Upthrust works on classic SEO and on AI-search visibility, meaning getting found in Google and in answers from tools like ChatGPT and Perplexity.{% if proof_point %} {{ proof_point }}{% endif %}
+
+      I can send you a short write-up of what I found for {{ company_name }}. {{ cta_question }}
+
+      {{ sender_name }}
+      {{ sender_title }}, Upthrust
+
+  - id: short_trigger
+    name: "Short, trigger-based"
+    use_when: "qualifier returned a trigger_event with evidence (hiring, launch, funding, new location)"
+    service_tags: []
+    subject: "{{ company_name }} growth"
+    min_words: 30
+    max_words: 85
+    extra_llm_variables:
+      trigger_observation:
+        desc: "ONE sentence referring to the trigger event, supported by evidence. Natural, not flattering."
+        min_chars: 50
+        max_chars: 200
+        evidence_required: true
+    body: |
+      Hi {{ first_name }},
+
+      {{ trigger_observation }}
+
+      Upthrust helps {{ icp_phrase }} grow through {{ service_phrase }}. {{ cta_question }}
+
+      {{ sender_name }}
+      {{ sender_title }}, Upthrust

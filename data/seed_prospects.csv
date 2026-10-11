@@ -1,0 +1,14 @@
+company_name,domain,industry,location,note,control
+Casper Sleep,casper.com,ecommerce,"New York, NY, US",Mattress & sleep DTC brand,false
+Ridge Wallet,ridge.com,ecommerce,"Santa Monica, CA, US",Minimalist wallets and gear,false
+Gymshark,gymshark.com,ecommerce,"Solihull, UK",Fitness apparel brand,false
+Modern Animal,modernanimal.com,health_medical,"Los Angeles, CA, US",Tech-forward veterinary clinics,false
+Carbon Health,carbonhealth.com,health_medical,"San Francisco, CA, US",Modern primary and urgent care clinics,false
+Tend Dental,hellotend.com,health_medical,"New York, NY, US",Modern tech-enabled dental studios,false
+Linear,linear.app,saas_it_services,"San Francisco, CA, US",Issue tracking software for high-growth tech teams,false
+Vercel,vercel.com,saas_it_services,"San Francisco, CA, US",Frontend cloud platform for developers,false
+Raycast,raycast.com,saas_it_services,"London, UK",Productivity tool launcher for macOS & Windows,false
+Cal.com,cal.com,saas_it_services,"San Francisco, CA, US",Open source scheduling infrastructure,false
+Benchmark Education,benchmarkeducation.com,professional_services,"New Rochelle, NY, US",Educational publishing and literacy solutions,false
+Wpromote Agency,wpromote.com,agency,"El Segundo, CA, US",Large digital marketing performance agency,true
+Salesforce,salesforce.com,enterprise,"San Francisco, CA, US",Global enterprise CRM provider,true
