@@ -90,7 +90,7 @@ def load_candidates_from_seed(
 
 class SearchProvider(ABC):
     @abstractmethod
-    def search_candidates(self, limit: int = 15) -> list[Candidate]:
+    def search_candidates(self, limit: int = 15, exclude_domains: set[str] | None = None) -> list[Candidate]:
         """Search and return candidate companies."""
         pass
 
@@ -124,39 +124,43 @@ class ExaSearchProvider(SearchProvider):
         self.exa_client = exa_client or ExaClient(settings=self.settings)
         self.llm_client = llm_client or LLMClient(settings=self.settings)
 
-    def search_candidates(self, limit: int = 15) -> list[Candidate]:
+    def search_candidates(self, limit: int = 15, exclude_domains: set[str] | None = None) -> list[Candidate]:
         cfg = load_upthrust_config()
-        icp = cfg.get("icp", {})
+        known_exclusions = set(exclude_domains or set()) | BLOCKED_DOMAINS
 
-        # Formulate 3 distinct ICP queries
-        queries = [
+        all_queries = [
             "fast growing direct to consumer DTC ecommerce brands home wellness apparel in US",
             "innovative B2B SaaS software platform for engineering productivity workflow teams",
             "independent healthcare dental clinic physical therapy practice modern medical",
+            "high growth consumer beverage food snack organic brands in US",
+            "AI agents developer tools cloud infrastructure startups B2B",
+            "modern fintech financial services payment software in US",
+            "direct to consumer sustainable home goods furniture bedding brands",
+            "clinical skincare dermatology aesthetic medical clinic practices in US",
+            "specialty coffee craft tea artisanal food ecommerce brands",
+            "supply chain logistics fleet management software platforms in US",
         ]
 
-        raw_results = []
-        for q in queries:
+        unique_results = {}
+        for q in all_queries:
             try:
                 results = self.exa_client.search(query=q, num_results=6, category="company")
-                raw_results.extend(results)
-            except Exception as e:
+                for r in results:
+                    url = r.get("url", "")
+                    d = normalize_domain(url)
+                    if d and d not in unique_results and d not in known_exclusions:
+                        unique_results[d] = r
+                if len(unique_results) >= limit * 2:
+                    break
+            except Exception:
                 continue
 
-        if not raw_results:
+        if not unique_results:
             return []
-
-        # Deduplicate results by domain
-        unique_results = {}
-        for r in raw_results:
-            url = r.get("url", "")
-            d = normalize_domain(url)
-            if d and d not in unique_results and d not in BLOCKED_DOMAINS:
-                unique_results[d] = r
 
         snippets_text = "\n\n".join([
             f"Title: {r.get('title')}\nURL: {r.get('url')}\nSnippet: {r.get('text', '')[:400]}"
-            for r in list(unique_results.values())[:18]
+            for r in list(unique_results.values())[:20]
         ])
 
         user_prompt = f"""
@@ -285,8 +289,10 @@ class SeedSearchProvider(SearchProvider):
         self.seed_csv_path = seed_csv_path
         self.with_control = with_control
 
-    def search_candidates(self, limit: int = 15) -> list[Candidate]:
+    def search_candidates(self, limit: int = 15, exclude_domains: set[str] | None = None) -> list[Candidate]:
         candidates = load_candidates_from_seed(self.seed_csv_path, with_control=self.with_control)
+        if exclude_domains:
+            candidates = [c for c in candidates if c.domain not in exclude_domains]
         return candidates[:limit]
 
 
@@ -331,13 +337,14 @@ class DiscoveryStep:
         with_control: bool = False,
         resume_task_id: str | None = None,
     ) -> list[Candidate]:
+        existing_domains = {p["domain"] for p in self.db.list_prospects()}
         provider = self.get_provider(source=source, with_control=with_control, resume_task_id=resume_task_id)
-        candidates = provider.search_candidates(limit=limit)
+        candidates = provider.search_candidates(limit=limit, exclude_domains=existing_domains)
 
         # Fallback to seed if provider returned empty
         if not candidates and not isinstance(provider, SeedSearchProvider):
             fallback_provider = SeedSearchProvider(with_control=with_control)
-            candidates = fallback_provider.search_candidates(limit=limit)
+            candidates = fallback_provider.search_candidates(limit=limit, exclude_domains=existing_domains)
 
         # Guarantee control candidate is present if requested
         if with_control and not any(c.source == "control" for c in candidates):

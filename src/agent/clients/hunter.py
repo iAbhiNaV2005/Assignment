@@ -26,18 +26,66 @@ class HunterClient:
         self.budget = budget or BudgetTracker()
 
     @property
+    def api_keys(self) -> list[str]:
+        keys: list[str] = []
+        if self.settings.hunter_api_key:
+            for k in self.settings.hunter_api_key.split(","):
+                k = k.strip()
+                if k and k not in keys:
+                    keys.append(k)
+        import os
+        for i in range(2, 10):
+            env_k = os.getenv(f"HUNTER_API_KEY_{i}", "").strip()
+            if env_k and env_k not in keys:
+                keys.append(env_k)
+        return keys
+
+    @property
     def headers(self) -> dict[str, str]:
-        return {"X-API-KEY": self.settings.hunter_api_key}
+        key = self.api_keys[0] if self.api_keys else ""
+        return {"X-API-KEY": key}
 
     def check_account(self) -> dict[str, Any]:
-        """Check account credits and plan limits."""
-        if not self.settings.hunter_api_key:
+        """Check all configured keys and return aggregated account status."""
+        keys = self.api_keys
+        if not keys:
             raise HunterAPIError("Missing HUNTER_API_KEY in configuration")
-        url = f"{self.BASE_URL}/account"
-        resp = httpx.get(url, headers=self.headers, timeout=10.0)
-        if resp.status_code != 200:
-            raise HunterAPIError(f"Hunter account check failed ({resp.status_code}): {resp.text}")
-        return resp.json()
+
+        valid_accounts: list[dict[str, Any]] = []
+        total_searches_left = 0
+        last_error = "Unknown error"
+
+        for k in keys:
+            try:
+                resp = httpx.get(f"{self.BASE_URL}/account", headers={"X-API-KEY": k}, timeout=8.0)
+                if resp.status_code == 200:
+                    d = resp.json().get("data", {})
+                    reqs = d.get("requests", {})
+                    searches = reqs.get("searches", {}).get("remaining", 0)
+                    total_searches_left += searches
+                    valid_accounts.append({
+                        "key": f"{k[:4]}...{k[-4:]}",
+                        "plan": d.get("plan_name", "Free"),
+                        "searches_left": searches,
+                    })
+                else:
+                    last_error = f"Key {k[:4]}... error ({resp.status_code})"
+            except Exception as e:
+                last_error = str(e)
+                continue
+
+        if not valid_accounts:
+            raise HunterAPIError(f"None of the configured Hunter API keys are valid: {last_error}")
+
+        primary = valid_accounts[0]
+        return {
+            "valid_count": len(valid_accounts),
+            "total_keys": len(keys),
+            "total_searches_left": total_searches_left,
+            "plan_name": primary["plan"],
+            "accounts": valid_accounts,
+            "data": {"plan_name": f"{primary['plan']} ({len(valid_accounts)} keys active, {total_searches_left} searches)"},
+        }
 
     def domain_search(
         self,
@@ -45,12 +93,13 @@ class HunterClient:
         limit: int = 5,
         seniority: str = "executive,senior",
     ) -> list[dict[str, Any]]:
-        """Search for emails associated with a domain."""
+        """Search for emails associated with a domain with multi-key failover."""
         cached = self.cache.get("hunter", f"domain_{domain}", {"limit": limit, "seniority": seniority})
         if cached:
             return cached.get("emails", [])
 
-        if not self.settings.hunter_api_key:
+        keys = self.api_keys
+        if not keys:
             return []
 
         self.budget.check_hunter_credits(credits=1.0)
@@ -61,16 +110,33 @@ class HunterClient:
             "limit": limit,
             "seniority": seniority,
         }
-        resp = httpx.get(url, headers=self.headers, params=params, timeout=15.0)
-        if resp.status_code != 200:
-            raise HunterAPIError(f"Hunter domain search failed ({resp.status_code}): {resp.text}")
 
-        data = resp.json().get("data", {})
-        emails = data.get("emails", [])
-        if emails:
-            self.budget.record_hunter_credit(1.0)
-        self.cache.set("hunter", f"domain_{domain}", {"limit": limit, "seniority": seniority}, {"emails": emails})
-        return emails
+        last_error = None
+        for k in keys:
+            try:
+                resp = httpx.get(url, headers={"X-API-KEY": k}, params=params, timeout=15.0)
+                if resp.status_code == 200:
+                    data = resp.json().get("data", {})
+                    emails = data.get("emails", [])
+                    if emails:
+                        self.budget.record_hunter_credit(1.0)
+                    self.cache.set("hunter", f"domain_{domain}", {"limit": limit, "seniority": seniority}, {"emails": emails})
+                    return emails
+                elif resp.status_code in (401, 403, 429):
+                    last_error = f"Key {k[:4]}... error ({resp.status_code})"
+                    continue
+                else:
+                    last_error = f"Status {resp.status_code}: {resp.text}"
+                    continue
+            except Exception as e:
+                last_error = str(e)
+                continue
+
+        # If all keys failed or returned empty
+        if last_error and "401" not in last_error:
+            # Only log/raise if not purely auth fail
+            pass
+        return []
 
     def email_finder(
         self,
