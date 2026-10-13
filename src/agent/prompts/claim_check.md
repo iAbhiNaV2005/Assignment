@@ -11,6 +11,7 @@ RULES:
 3. Flag any unfounded claims of familiarity (e.g., claiming to have seen a specific ad when no ad was evidenced).
 4. Flag any absolute promises or guarantees.
 5. If the statement is general about Upthrust's capabilities (e.g., "Upthrust is a small growth team that fixes this"), that is NOT a claim about the prospect and should NOT be flagged.
+6. Hedged analytical deductions explaining the consequence of an evidenced technical gap (e.g., using "likely", "often", "can", "may" to explain why a missing pixel makes conversion tracking difficult) are standard industry observations and should NOT be flagged, provided they do not invent specific numbers, metrics, or assert private internal company data as definitive facts.
 
 OUTPUT FORMAT:
 {
