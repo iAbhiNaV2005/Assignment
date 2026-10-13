@@ -37,6 +37,8 @@ from agent.steps.discover import DiscoveryStep
 app = typer.Typer(help="Upthrust AI Outbound Agent CLI", no_args_is_help=True)
 suppress_app = typer.Typer(help="Manage suppression list")
 app.add_typer(suppress_app, name="suppress")
+cache_app = typer.Typer(help="Manage local disk cache")
+app.add_typer(cache_app, name="cache")
 
 # console initialized above with force_terminal=True, legacy_windows=False
 
@@ -167,6 +169,7 @@ def discover(
     n: int = typer.Option(15, "--n", help="Number of prospects to discover"),
     with_control: bool = typer.Option(False, "--with-control", help="Include 1 known poor-fit company for rejection testing"),
     resume: Optional[str] = typer.Option(None, "--resume", help="Resume existing Yutori research task ID"),
+    fresh: bool = typer.Option(False, "--fresh", "--no-cache", help="Bypass disk cache to discover brand new live prospects"),
 ):
     """Discover new prospects and add them to the candidate pool."""
     db = Database()
@@ -174,7 +177,7 @@ def discover(
     discovery_step = DiscoveryStep(db=db, settings=settings)
 
     console.print(f"[bold cyan]Starting discovery via provider '{provider}' (target: {n})...[/bold cyan]")
-    candidates = discovery_step.run(source=provider, limit=n, with_control=with_control, resume_task_id=resume)
+    candidates = discovery_step.run(source=provider, limit=n, with_control=with_control, resume_task_id=resume, fresh=fresh)
 
     table = Table(title=f"Discovered Prospects Added ({len(candidates)})", show_lines=True)
     table.add_column("Company", style="bold")
@@ -334,6 +337,39 @@ def suppress_add(value: str, reason: str = typer.Option("manual", "--reason")):
     db = Database()
     db.add_suppression(value, reason=reason)
     console.print(f"[green]Added '{value}' to suppression list (reason: {reason}).[/green]")
+
+
+@cache_app.command("clear")
+def cache_clear():
+    """Clear all cached API responses in data/cache."""
+    cache = DiskCache()
+    deleted = cache.clear()
+    console.print(f"[bold green]Cleared {deleted} cached file(s) from {cache.cache_dir}.[/bold green]")
+
+
+@cache_app.command("status")
+def cache_status():
+    """Show cache status and number of cached entries."""
+    cache = DiskCache()
+    total = cache.count()
+    console.print(f"[cyan]Cache directory: {cache.cache_dir}[/cyan]")
+    console.print(f"[bold green]{total} cached file(s) on disk.[/bold green]")
+
+
+@app.command()
+def reset(
+    include_suppression: bool = typer.Option(False, "--include-suppression", help="Also clear the suppression list"),
+    yes: bool = typer.Option(False, "-y", "--yes", help="Skip confirmation prompt"),
+):
+    """Clear all prospects, runs, and pipeline data from the database."""
+    if not yes:
+        confirm = typer.confirm("Are you sure you want to clear all prospects and run history from the database?")
+        if not confirm:
+            console.print("[yellow]Aborted.[/yellow]")
+            return
+    db = Database()
+    db.clear_all(include_suppression=include_suppression)
+    console.print("[bold green]Database cleared. The prospect pool is now fresh and empty.[/bold green]")
 
 
 @app.command()

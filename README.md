@@ -156,6 +156,9 @@ agent doctor
 # Fast discovery via Exa AI (~2-4s), adding commercial prospects to the pool
 agent discover --provider exa --n 5 --with-control
 
+# To bypass disk cache and search brand new live companies:
+agent discover --provider exa --n 5 --fresh
+
 # 3. View Prospect Pool
 # Lists all prospects, their pipeline state, and acquisition source
 agent pool
@@ -176,7 +179,12 @@ agent show ridge.com
 # Prints stage conversion metrics and total API token costs
 agent report
 
-# 8. Launch Interactive Web Dashboard
+# 8. Reset Database / Clear Cache
+# Wipes pipeline state to start fresh, or clears cached responses
+agent reset --yes
+agent cache clear
+
+# 9. Launch Interactive Web Dashboard
 agent dashboard --port 8000
 ```
 

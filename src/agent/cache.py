@@ -60,3 +60,21 @@ class DiskCache:
             except Exception:
                 pass
         return False
+
+    def count(self) -> int:
+        """Return the count of cached JSON files."""
+        if not self.cache_dir.exists():
+            return 0
+        return len(list(self.cache_dir.glob("*.json")))
+
+    def clear(self) -> int:
+        """Remove all cached files in cache_dir. Returns count of deleted files."""
+        deleted = 0
+        if self.cache_dir.exists():
+            for f in self.cache_dir.glob("*.json"):
+                try:
+                    f.unlink()
+                    deleted += 1
+                except Exception:
+                    pass
+        return deleted

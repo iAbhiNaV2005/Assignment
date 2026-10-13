@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+import random
 from pydantic import BaseModel, Field
 
 from agent.clients.exa import ExaClient
@@ -141,8 +142,11 @@ class ExaSearchProvider(SearchProvider):
             "supply chain logistics fleet management software platforms in US",
         ]
 
+        queries = list(all_queries)
+        random.shuffle(queries)
+
         unique_results = {}
-        for q in all_queries:
+        for q in queries:
             try:
                 results = self.exa_client.search(query=q, num_results=6, category="company")
                 for r in results:
@@ -336,7 +340,13 @@ class DiscoveryStep:
         limit: int = 15,
         with_control: bool = False,
         resume_task_id: str | None = None,
+        fresh: bool = False,
     ) -> list[Candidate]:
+        if fresh:
+            from agent.cache import DiskCache
+            self.exa_client = ExaClient(settings=self.settings, cache=DiskCache(enabled=False))
+            self.llm_client = LLMClient(settings=self.settings, cache=DiskCache(enabled=False))
+
         existing_domains = {p["domain"] for p in self.db.list_prospects()}
         provider = self.get_provider(source=source, with_control=with_control, resume_task_id=resume_task_id)
         candidates = provider.search_candidates(limit=limit, exclude_domains=existing_domains)

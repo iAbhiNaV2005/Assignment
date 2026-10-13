@@ -27,6 +27,17 @@ class Database:
         conn.execute("PRAGMA foreign_keys = ON")
         return conn
 
+    def clear_all(self, include_suppression: bool = False) -> None:
+        """Clear all prospects, runs, and API logs. Optionally clear suppression list."""
+        with self.get_conn() as conn:
+            conn.execute("PRAGMA foreign_keys = ON")
+            conn.execute("DELETE FROM prospects")
+            conn.execute("DELETE FROM runs")
+            conn.execute("DELETE FROM api_calls")
+            if include_suppression:
+                conn.execute("DELETE FROM suppression")
+            conn.commit()
+
     def init_db(self) -> None:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         with self.get_conn() as conn:
