@@ -110,7 +110,8 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
     });
   }, [revisionsData]);
 
-  const revisionColors = ["#64748b", "#94a3b8", "#a78bfa", "#818cf8", "#f59e0b", "#06b6d4"];
+  // Data visualization color palette (Linear dark theme standards)
+  const revisionColors = ["#484f58", "#6e7681", "#8b949e", "#a371f7", "#d29922", "#58a6ff"];
 
   return (
     <div className="space-y-6">
@@ -261,7 +262,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div>
               <span className="text-[10px] font-medium text-slate-400">P90 shortfall</span>
               <p className="text-sm font-bold text-rose-400">
-                {summary?.shortfallP90Mw ? `${Math.round(summary.shortfallP90Mw).toLocaleString()} MW` : "—"}
+                {summary?.shortfallP90Mw ? `${Math.round(summary.shortfallP90Mw)} MW` : "—"}
               </p>
             </div>
           </div>
@@ -351,29 +352,29 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
         <span className="text-xs text-slate-500">Power units in Megawatts (MW)</span>
       </div>
 
-      {/* TAB 1: Primary Time Series Chart */}
+      {/* TAB 1: Primary Time Series Chart (DataViz standards: Conclusion title, context subtitle, zero-baseline) */}
       {activeSubTab === "timeseries" && (
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h4 className="text-sm font-bold text-white">
-                Intraday wind generation profile ({selectedDate})
+                Decision forecast tracks actual generation across 48 settlement periods with periodic shortfall
               </h4>
               <p className="text-xs text-slate-400">
-                Comparing the frozen day-ahead decision forecast against actual national wind generation.
+                {selectedDate} • Elexon FUELHH actuals vs D-1 WINDFOR decision stream (09:00 cutoff) • Power in Megawatts (MW)
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs">
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#38bdf8]" />
                 <span className="text-slate-300">Decision forecast (MW)</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#3fb950]" />
                 <span className="text-slate-300">Actual outturn (MW)</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-rose-500/40" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#f85149]/40" />
                 <span className="text-slate-400">Shortfall volume (MW)</span>
               </span>
             </div>
@@ -384,24 +385,24 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <defs>
                   <linearGradient id="forecastGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
                   </linearGradient>
                   <linearGradient id="shortfallGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#f85149" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#f85149" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#21262d" strokeOpacity={0.7} />
                 <XAxis
                   dataKey="timeLabel"
-                  stroke="#64748b"
+                  stroke="#8b949e"
                   fontSize={11}
                   tickLine={false}
                   interval={3}
                 />
                 <YAxis
-                  stroke="#64748b"
+                  stroke="#8b949e"
                   fontSize={11}
                   domain={[0, "auto"]}
                   tickLine={false}
@@ -409,8 +410,8 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0f172a",
-                    borderColor: "#334155",
+                    backgroundColor: "#161b22",
+                    borderColor: "#30363d",
                     borderRadius: "0.75rem",
                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)",
                     fontSize: "12px",
@@ -428,7 +429,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   type="monotone"
                   dataKey="forecast"
                   name="Decision forecast"
-                  stroke="#06b6d4"
+                  stroke="#38bdf8"
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#forecastGrad)"
@@ -437,7 +438,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   type="monotone"
                   dataKey="actual"
                   name="Actual outturn"
-                  stroke="#10b981"
+                  stroke="#3fb950"
                   strokeWidth={2.5}
                   dot={false}
                 />
@@ -445,7 +446,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   type="monotone"
                   dataKey="shortfall"
                   name="Shortfall volume"
-                  stroke="#ef4444"
+                  stroke="#f85149"
                   strokeWidth={1}
                   fillOpacity={1}
                   fill="url(#shortfallGrad)"
@@ -462,20 +463,20 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h4 className="text-sm font-bold text-white">
-                Forecast revisions prior to gate closure ({selectedDate})
+                Forecast revisions show meteorology updates across runs leading up to gate closure
               </h4>
               <p className="text-xs text-slate-400">
-                Visualizing how weather models adjusted wind expectations leading up to cutoff time.
+                {selectedDate} • Successive WINDFOR publishes prior to cutoff vs final actual outturn • Units: MW
               </p>
             </div>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                <span className="text-cyan-300 font-semibold">Final decision forecast</span>
+                <span className="h-2 w-2 rounded-full bg-[#38bdf8]" />
+                <span className="text-[#38bdf8] font-semibold">Final decision forecast</span>
               </span>
               <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-emerald-300 font-semibold">Actual outturn</span>
+                <span className="h-2 w-2 rounded-full bg-[#3fb950]" />
+                <span className="text-[#3fb950] font-semibold">Actual outturn</span>
               </span>
             </div>
           </div>
@@ -483,23 +484,23 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="h-[380px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={revisionsChartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#21262d" strokeOpacity={0.7} />
                 <XAxis
                   dataKey="timeLabel"
-                  stroke="#64748b"
+                  stroke="#8b949e"
                   fontSize={11}
                   interval={3}
                 />
                 <YAxis
-                  stroke="#64748b"
+                  stroke="#8b949e"
                   fontSize={11}
                   domain={[0, "auto"]}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)} GW`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0f172a",
-                    borderColor: "#334155",
+                    backgroundColor: "#161b22",
+                    borderColor: "#30363d",
                     borderRadius: "0.75rem",
                     fontSize: "12px",
                   }}
@@ -526,7 +527,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <Line
                   type="monotone"
                   dataKey="Decision forecast"
-                  stroke="#06b6d4"
+                  stroke="#38bdf8"
                   strokeWidth={3}
                   dot={false}
                 />
@@ -536,7 +537,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   type="monotone"
                   dataKey="actual"
                   name="Actual outturn"
-                  stroke="#10b981"
+                  stroke="#3fb950"
                   strokeWidth={2.5}
                   dot={false}
                 />
