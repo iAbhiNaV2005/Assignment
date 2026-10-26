@@ -25,7 +25,7 @@ from backend.analysis.selection import (
     select_decision_forecasts_for_range,
 )
 from backend.app.config import settings
-from backend.app.database import get_db_connection
+from backend.app.database import get_db_connection, get_db_path
 from backend.app.schemas import (
     BufferResponse,
     ConfigResponse,
@@ -81,7 +81,7 @@ def sanitize_floats(obj):
 @router.get("/health", response_model=HealthResponse)
 def get_health():
     """System health check, dataset coverage, and record counts."""
-    db_path = settings.DATABASE_PATH
+    db_path = get_db_path()
     if not os.path.exists(db_path):
         raise HTTPException(status_code=500, detail="Database file not found.")
 

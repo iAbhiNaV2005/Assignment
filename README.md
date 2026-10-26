@@ -208,13 +208,62 @@ make lint
 
 ---
 
-## 8. Deployment Notes
+## 8. Deployment: Two Vercel Projects from One Repository
 
-- **Docker:** `docker-compose.yml` provides the reference containerized stack for local development and technical evaluator review.
-- **Cloud Deployment (Vercel / Render / Heroku):**
-  - Frontend is optimized for Vercel deployment with zero-configuration Next.js App Router support.
-  - Backend can run as a containerized service (Render / Heroku) or serverless FastAPI handler.
-  - `CORS_ORIGINS` in `backend/app/config.py` allows cross-origin requests from any frontend domain.
+This recommended setup deploys two linked Vercel projects from a single GitHub repository. It provides the cleanest separation of concerns and maximum predictability on the free tier.
+
+| Project | Root Directory | Runtime | Functionality |
+| :--- | :--- | :--- | :--- |
+| `<anon-name>-api` | `backend/` | Python 3.12 (FastAPI via `@vercel/python`) | Analytical REST API + Bundled SQLite DB |
+| `<anon-name>-web` | `frontend/` | Node.js (Next.js 16 App Router) | Interactive Trading Desk Web Interface |
+
+### Step-by-Step Deployment Instructions
+
+#### Step 1: Push Repository to GitHub
+Push this repository to GitHub (e.g. `https://github.com/iAbhiNaV2005/Assignment.git`).
+
+#### Step 2: Deploy Backend API (`<anon-name>-api`)
+1. In the Vercel Dashboard, click **Add New** → **Project**.
+2. Import the GitHub repository.
+3. In project configuration:
+   - **Project Name:** `<anon-name>-api` (e.g. `uk-wind-api`)
+   - **Root Directory:** Click *Edit* and select **`backend`**
+   - Leave Framework Preset as *Other* (configured automatically by `backend/vercel.json` and `backend/pyproject.toml`)
+4. Click **Deploy**.
+5. Once deployed, test the following URLs in your browser:
+   - `https://<api-project>.vercel.app/api/health` → Must return `"status": "healthy"`, `"actualRecordsCount": 1488`
+   - `https://<api-project>.vercel.app/docs` → Interactive Swagger documentation must load cleanly.
+
+#### Step 3: Deploy Frontend Web (`<anon-name>-web`)
+1. In Vercel, click **Add New** → **Project**.
+2. Import the **same** GitHub repository.
+3. In project configuration:
+   - **Project Name:** `<anon-name>-web` (e.g. `uk-wind-portal`)
+   - **Root Directory:** Click *Edit* and select **`frontend`**
+   - Framework Preset will auto-detect as **Next.js**.
+4. Expand **Environment Variables** and add:
+   - **Key:** `NEXT_PUBLIC_API_URL`
+   - **Value:** `https://<api-project>.vercel.app` *(use the URL from Step 2 without a trailing slash)*
+5. Click **Deploy**.
+
+#### Step 4: Verification in Browser
+1. Open the deployed frontend URL in an incognito window.
+2. Verify all three workspaces:
+   - **Decision Desk:** Day selector (Jan 1–31), D-1 cutoff stepper, intraday 48-period forecast chart, and revisions table.
+   - **Accuracy & Risk:** Headline KPIs (MAE 2,145 MW, Bias +1,852 MW), confidence slider (75%–99%), and analytical sub-charts.
+   - **Methodology & Code:** Mathematical definitions, ASCII decision timeline, and live health audit.
+3. Inspect browser console to confirm zero CORS errors or missing resource warnings.
+
+---
+
+### Pre-Configured Architectural Safeguards
+
+- **Bundled Database:** `backend/vercel.json` explicitly declares `includeFiles: ["data/wind_data.db"]`. The database is committed directly in git and packaged into the Lambda container.
+- **Read-Only SQLite Storage:** Serverless execution filesystems are strictly read-only. `backend/app/database.py` connects with URI `?mode=ro`, completely avoiding database locks and runtime filesystem errors.
+- **Entrypoint Discovery:** `backend/main.py`, `backend/app/main.py`, `backend/pyproject.toml` (`tool.vercel.entrypoint = "main.py"`), and `backend/vercel.json` are pre-wired to guarantee Vercel locates the FastAPI application instance.
+- **Universal Vercel CORS:** `backend/app/main.py` is configured with `allow_origin_regex=r"^https:\/\/.*\.vercel\.app$"`, allowing preview, staging, and production frontend deployments to communicate seamlessly without manual CORS updates.
+- **Cold Start Warm-Up:** The first request after idle spins up the serverless Python environment (1–2s). Subsequent analytical queries resolve in 10–50ms.
+
 
 ---
 

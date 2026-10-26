@@ -12,10 +12,12 @@ import {
   WindLevelBreakdownItem,
 } from "./types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const rawBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").trim();
+const API_BASE_URL = rawBase.replace(/\/+$/, "");
 
 async function apiFetch<T>(endpoint: string, params?: Record<string, string | number | undefined>): Promise<T> {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = new URL(`${API_BASE_URL}${cleanEndpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
