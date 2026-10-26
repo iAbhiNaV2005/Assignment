@@ -106,27 +106,27 @@ export default function Home() {
   }, [activeTab, loadDecisionData, loadAccuracyData]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="flex min-h-screen flex-col bg-[#0a0b0d] text-[#f3f4f6] selection:bg-[#0284c7]/30 selection:text-[#38bdf8]">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         apiHealthStatus={apiHealthStatus}
       />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <main className="flex-1 px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           {/* Error Banner */}
           {errorMessage && (
-            <div className="mb-6 flex items-center justify-between rounded-xl border border-rose-500/30 bg-rose-950/30 p-4 text-xs text-rose-300">
+            <div className="mb-4 flex items-center justify-between rounded-lg border border-[#581f2a] bg-[#181114] p-3 text-xs text-[#f43f5e]">
               <div className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-rose-400" />
+                <AlertCircle className="h-4 w-4 text-[#f43f5e]" />
                 <span>{errorMessage}</span>
               </div>
               <button
                 onClick={() => (activeTab === "decision" ? loadDecisionData() : loadAccuracyData())}
-                className="flex items-center gap-1 font-semibold text-rose-300 hover:text-white"
+                className="flex items-center gap-1 font-semibold text-[#f43f5e] hover:text-white"
               >
-                <RefreshCw className="h-3.5 w-3.5" />
+                <RefreshCw className="h-3 w-3" />
                 Retry
               </button>
             </div>
@@ -172,11 +172,11 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-500">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6">
+      <footer className="mt-10 border-t border-[#22262e] bg-[#0e1013] py-4 text-xs text-[#6b7280]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6">
           <p>© 2026 UK Wind Day-Ahead Procurement Desk. Data sourced from Elexon BMRS.</p>
-          <div className="flex items-center gap-4">
-            <span>January 2026 Delivery Scope</span>
+          <div className="flex items-center gap-3 text-[11px]">
+            <span>January 2026 Scope</span>
             <span>•</span>
             <span>FastAPI Python Engine</span>
             <span>•</span>
