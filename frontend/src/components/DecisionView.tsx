@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Calendar,
   Clock,
@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   TrendingUp,
-  Info,
   CheckCircle2,
   RefreshCw,
 } from "lucide-react";
@@ -63,49 +62,53 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
   const summary = decisionData?.summary;
   const periods = decisionData?.periods || [];
 
-  // Transform periods for primary chart
-  const chartData = periods.map((p) => {
-    const timeLabel = p.startTime.substring(11, 16);
-    const act = p.actual !== null ? Math.round(p.actual) : null;
-    const fc = p.forecast !== null ? Math.round(p.forecast) : null;
-    const err = p.error !== null ? Math.round(p.error) : null;
-    const sf = p.shortfall !== null ? Math.round(p.shortfall) : 0;
+  // Memoized chart data for render performance (vercel-react-best-practices)
+  const chartData = useMemo(() => {
+    return periods.map((p) => {
+      const timeLabel = p.startTime.substring(11, 16);
+      const act = p.actual !== null ? Math.round(p.actual) : null;
+      const fc = p.forecast !== null ? Math.round(p.forecast) : null;
+      const err = p.error !== null ? Math.round(p.error) : null;
+      const sf = p.shortfall !== null ? Math.round(p.shortfall) : 0;
 
-    return {
-      period: p.settlementPeriod,
-      label: `SP${p.settlementPeriod} (${timeLabel})`,
-      timeLabel,
-      actual: act,
-      forecast: fc,
-      error: err,
-      shortfall: sf,
-      publishTime: p.publishTime ? p.publishTime.substring(11, 16) + " UTC" : "—",
-    };
-  });
-
-  // Revisions chart data preparation
-  const revisionLines = revisionsData?.revisions || [];
-  const actualsList = revisionsData?.actuals || [];
-
-  // Join revisions into a single table by period
-  const revisionsChartData = Array.from({ length: 48 }, (_, i) => {
-    const sp = i + 1;
-    const actItem = actualsList.find((a) => a.settlementPeriod === sp);
-    const point: Record<string, any> = {
-      period: sp,
-      actual: actItem && actItem.actual !== null ? Math.round(actItem.actual) : null,
-    };
-
-    revisionLines.forEach((rev, idx) => {
-      const dp = rev.data.find((d) => d.settlementPeriod === sp);
-      const key = rev.isDecisionForecast
-        ? "Decision Forecast"
-        : `Pub ${rev.publishTime.substring(5, 16).replace("T", " ")}`;
-      point[key] = dp && dp.forecast !== null ? Math.round(dp.forecast) : null;
+      return {
+        period: p.settlementPeriod,
+        label: `Settlement Period ${p.settlementPeriod} (${timeLabel} UTC)`,
+        timeLabel,
+        actual: act,
+        forecast: fc,
+        error: err,
+        shortfall: sf,
+        publishTime: p.publishTime ? p.publishTime.substring(11, 16) + " UTC" : "—",
+      };
     });
+  }, [periods]);
 
-    return point;
-  });
+  // Memoized revisions evolution data (vercel-react-best-practices)
+  const revisionsChartData = useMemo(() => {
+    const revisionLines = revisionsData?.revisions || [];
+    const actualsList = revisionsData?.actuals || [];
+
+    return Array.from({ length: 48 }, (_, i) => {
+      const sp = i + 1;
+      const actItem = actualsList.find((a) => a.settlementPeriod === sp);
+      const point: Record<string, string | number | null> = {
+        period: sp,
+        timeLabel: `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 === 0 ? "00" : "30"}`,
+        actual: actItem && actItem.actual !== null ? Math.round(actItem.actual) : null,
+      };
+
+      revisionLines.forEach((rev) => {
+        const dp = rev.data.find((d) => d.settlementPeriod === sp);
+        const key = rev.isDecisionForecast
+          ? "Decision forecast"
+          : `Published ${rev.publishTime.substring(11, 16)} UTC`;
+        point[key] = dp && dp.forecast !== null ? Math.round(dp.forecast) : null;
+      });
+
+      return point;
+    });
+  }, [revisionsData]);
 
   const revisionColors = ["#64748b", "#94a3b8", "#a78bfa", "#818cf8", "#f59e0b", "#06b6d4"];
 
@@ -121,6 +124,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               disabled={selectedDate === "2026-01-01"}
               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white disabled:opacity-40"
               title="Previous Day"
+              aria-label="Previous day"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -134,6 +138,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 value={selectedDate}
                 onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
                 className="bg-transparent text-sm font-semibold text-white focus:outline-none"
+                aria-label="Delivery date"
               />
             </div>
 
@@ -142,6 +147,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               disabled={selectedDate === "2026-01-31"}
               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white disabled:opacity-40"
               title="Next Day"
+              aria-label="Next day"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -151,39 +157,43 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5">
             <Clock className="h-4 w-4 text-amber-400" />
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-400">D-1 Cutoff:</span>
+              <label htmlFor="cutoff-input" className="text-xs text-slate-400">
+                Decision cutoff (D-1):
+              </label>
               <input
+                id="cutoff-input"
                 type="text"
                 pattern="^([01]\d|2[0-3]):([0-5]\d)$"
                 value={cutoffTime}
                 onChange={(e) => setCutoffTime(e.target.value)}
                 className="w-14 rounded bg-slate-800 px-1.5 py-0.5 text-center text-xs font-bold text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 placeholder="09:00"
+                aria-label="Cutoff time"
               />
-              <span className="text-[11px] text-slate-500">London</span>
+              <span className="text-[11px] text-slate-500">London time</span>
             </div>
           </div>
 
           {/* Quick presets */}
           <div className="hidden items-center gap-1.5 xl:flex">
-            <span className="text-xs text-slate-500">Quick Jump:</span>
+            <span className="text-xs text-slate-500">Quick jump:</span>
             <button
               onClick={() => setSelectedDate("2026-01-10")}
               className="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-xs text-slate-400 hover:border-slate-700 hover:text-cyan-400"
             >
-              High Wind (Jan 10)
+              High wind (10 Jan)
             </button>
             <button
               onClick={() => setSelectedDate("2026-01-24")}
               className="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-xs text-slate-400 hover:border-slate-700 hover:text-amber-400"
             >
-              Max Shortfall (Jan 24)
+              Peak shortfall (24 Jan)
             </button>
             <button
               onClick={() => setSelectedDate("2026-01-05")}
               className="rounded-md border border-slate-800 bg-slate-950/60 px-2 py-1 text-xs text-slate-400 hover:border-slate-700 hover:text-slate-300"
             >
-              Balanced (Jan 5)
+              Balanced day (5 Jan)
             </button>
           </div>
         </div>
@@ -221,19 +231,18 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-white">
-                  Decision Timeline Verified for {selectedDate}
+                  Decision timeline verified for {selectedDate}
                 </h3>
                 <span className="rounded bg-cyan-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-cyan-300">
-                  Strict Cutoff
+                  Strict cutoff
                 </span>
               </div>
               <p className="mt-1 text-xs text-slate-300">
-                Gate closure cutoff was enforced on{" "}
+                Gate closure cutoff enforced at{" "}
                 <span className="font-semibold text-cyan-200">
-                  {decisionData?.cutoffUtc.replace("T", " at ").replace(":00Z", " UTC")}
+                  {decisionData?.cutoffUtc.replace("T", " ").replace(":00Z", " UTC")}
                 </span>
-                . Only forecasts published prior to this timestamp were considered. Any subsequent
-                forecast updates are strictly excluded to ensure honest day-ahead trade modeling.
+                . Only forecasts published prior to this timestamp are incorporated, ensuring strict anti-leakage compliance.
               </p>
             </div>
           </div>
@@ -241,18 +250,18 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           {/* Quick Stats Pill */}
           <div className="flex items-center gap-4 rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-2">
             <div>
-              <span className="text-[10px] font-medium uppercase text-slate-400">Decision Bias</span>
+              <span className="text-[10px] font-medium text-slate-400">Decision bias</span>
               <p className={`text-sm font-bold ${summary?.biasMw && summary.biasMw > 0 ? "text-amber-400" : "text-emerald-400"}`}>
                 {summary?.biasMw !== null && summary?.biasMw !== undefined
-                  ? `${summary.biasMw > 0 ? "+" : ""}${Math.round(summary.biasMw)} MW`
+                  ? `${summary.biasMw > 0 ? "+" : ""}${Math.round(summary.biasMw).toLocaleString()} MW`
                   : "—"}
               </p>
             </div>
             <div className="h-8 w-px bg-slate-800" />
             <div>
-              <span className="text-[10px] font-medium uppercase text-slate-400">P90 Shortfall</span>
+              <span className="text-[10px] font-medium text-slate-400">P90 shortfall</span>
               <p className="text-sm font-bold text-rose-400">
-                {summary?.shortfallP90Mw ? `${Math.round(summary.shortfallP90Mw)} MW` : "—"}
+                {summary?.shortfallP90Mw ? `${Math.round(summary.shortfallP90Mw).toLocaleString()} MW` : "—"}
               </p>
             </div>
           </div>
@@ -262,45 +271,45 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
       {/* Headline KPI Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <KPICard
-          title="Day Mean Forecast"
+          title="Day mean forecast"
           value={summary?.meanForecastMw !== null && summary?.meanForecastMw !== undefined ? Math.round(summary.meanForecastMw).toLocaleString() : null}
           unit="MW"
-          subtitle="Expected Generation"
-          badge={{ text: "Day-Ahead", variant: "info" }}
+          subtitle="Expected generation"
+          badge={{ text: "Day-ahead", variant: "info" }}
           icon={<TrendingUp className="h-4 w-4 text-cyan-400" />}
         />
         <KPICard
-          title="Day Mean Actual"
+          title="Day mean actual"
           value={summary?.meanActualMw !== null && summary?.meanActualMw !== undefined ? Math.round(summary.meanActualMw).toLocaleString() : null}
           unit="MW"
-          subtitle="Outturn Generation"
+          subtitle="Outturn generation"
           badge={{ text: "Elexon FUELHH", variant: "success" }}
           icon={<CheckCircle2 className="h-4 w-4 text-emerald-400" />}
         />
         <KPICard
-          title="Mean Absolute Error"
+          title="Mean absolute error"
           value={summary?.maeMw !== null && summary?.maeMw !== undefined ? Math.round(summary.maeMw).toLocaleString() : null}
           unit="MW"
-          subtitle="Typical Miss"
+          subtitle="Typical miss size"
           badge={{ text: "MAE", variant: "neutral" }}
         />
         <KPICard
-          title="Day Net Bias"
+          title="Day net bias"
           value={summary?.biasMw !== null && summary?.biasMw !== undefined ? `${summary.biasMw > 0 ? "+" : ""}${Math.round(summary.biasMw).toLocaleString()}` : null}
           unit="MW"
-          subtitle={summary?.biasMw && summary.biasMw > 0 ? "Over-forecast (Shortfall)" : "Under-forecast"}
+          subtitle={summary?.biasMw && summary.biasMw > 0 ? "Over-forecast (shortfall)" : "Under-forecast"}
           badge={{
-            text: summary?.biasMw && summary.biasMw > 0 ? "Shortfall Risk" : "Excess Wind",
+            text: summary?.biasMw && summary.biasMw > 0 ? "Shortfall risk" : "Excess wind",
             variant: summary?.biasMw && summary.biasMw > 0 ? "warning" : "success",
           }}
           icon={<AlertTriangle className="h-4 w-4 text-amber-400" />}
         />
         <KPICard
-          title="P90 Shortfall Capacity"
+          title="P90 shortfall capacity"
           value={summary?.shortfallP90Mw !== null && summary?.shortfallP90Mw !== undefined ? Math.round(summary.shortfallP90Mw).toLocaleString() : null}
           unit="MW"
-          subtitle="Safety Margin Needed"
-          badge={{ text: "90% Conf", variant: "danger" }}
+          subtitle="Safety buffer needed"
+          badge={{ text: "90% confidence", variant: "danger" }}
         />
       </div>
 
@@ -315,7 +324,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Decision Forecast vs. Actual (48 Half-Hours)
+            Decision forecast vs actual (48 half-hours)
           </button>
           <button
             onClick={() => setActiveSubTab("revisions")}
@@ -325,7 +334,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Forecast Revisions Evolution
+            Forecast revisions evolution
           </button>
           <button
             onClick={() => setActiveSubTab("table")}
@@ -335,11 +344,11 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            48 Settlement Periods Table
+            Settlement periods table (48 periods)
           </button>
         </div>
 
-        <span className="text-xs text-slate-500">All power generation values in Megawatts (MW)</span>
+        <span className="text-xs text-slate-500">Power units in Megawatts (MW)</span>
       </div>
 
       {/* TAB 1: Primary Time Series Chart */}
@@ -348,7 +357,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h4 className="text-sm font-bold text-white">
-                Intraday Wind Generation Profile ({selectedDate})
+                Intraday wind generation profile ({selectedDate})
               </h4>
               <p className="text-xs text-slate-400">
                 Comparing the frozen day-ahead decision forecast against actual national wind generation.
@@ -357,15 +366,15 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div className="flex items-center gap-4 text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-cyan-400" />
-                <span className="text-slate-300">Decision Forecast (MW)</span>
+                <span className="text-slate-300">Decision forecast (MW)</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                <span className="text-slate-300">Actual Outturn (MW)</span>
+                <span className="text-slate-300">Actual outturn (MW)</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-rose-500/40" />
-                <span className="text-slate-400">Shortfall Volume (MW)</span>
+                <span className="text-slate-400">Shortfall volume (MW)</span>
               </span>
             </div>
           </div>
@@ -394,6 +403,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <YAxis
                   stroke="#64748b"
                   fontSize={11}
+                  domain={[0, "auto"]}
                   tickLine={false}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)} GW`}
                 />
@@ -417,7 +427,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <Area
                   type="monotone"
                   dataKey="forecast"
-                  name="Decision Forecast"
+                  name="Decision forecast"
                   stroke="#06b6d4"
                   strokeWidth={2.5}
                   fillOpacity={1}
@@ -426,7 +436,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <Line
                   type="monotone"
                   dataKey="actual"
-                  name="Actual Outturn"
+                  name="Actual outturn"
                   stroke="#10b981"
                   strokeWidth={2.5}
                   dot={false}
@@ -434,7 +444,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <Area
                   type="monotone"
                   dataKey="shortfall"
-                  name="Shortfall (Over-forecast)"
+                  name="Shortfall volume"
                   stroke="#ef4444"
                   strokeWidth={1}
                   fillOpacity={1}
@@ -452,20 +462,20 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h4 className="text-sm font-bold text-white">
-                Forecast Revisions Prior to Gate Closure ({selectedDate})
+                Forecast revisions prior to gate closure ({selectedDate})
               </h4>
               <p className="text-xs text-slate-400">
-                Visualizing how weather models adjusted wind expectations leading up to the cutoff time.
+                Visualizing how weather models adjusted wind expectations leading up to cutoff time.
               </p>
             </div>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1">
                 <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                <span className="text-cyan-300 font-semibold">Final Decision Forecast</span>
+                <span className="text-cyan-300 font-semibold">Final decision forecast</span>
               </span>
               <span className="flex items-center gap-1">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-emerald-300 font-semibold">Actual Outturn</span>
+                <span className="text-emerald-300 font-semibold">Actual outturn</span>
               </span>
             </div>
           </div>
@@ -475,15 +485,15 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               <LineChart data={revisionsChartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis
-                  dataKey="period"
+                  dataKey="timeLabel"
                   stroke="#64748b"
                   fontSize={11}
-                  tickFormatter={(p) => `SP${p}`}
                   interval={3}
                 />
                 <YAxis
                   stroke="#64748b"
                   fontSize={11}
+                  domain={[0, "auto"]}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)} GW`}
                 />
                 <Tooltip
@@ -499,7 +509,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
 
                 {/* Earlier publishes */}
                 {Object.keys(revisionsChartData[0] || {})
-                  .filter((k) => k !== "period" && k !== "actual" && k !== "Decision Forecast")
+                  .filter((k) => k !== "period" && k !== "timeLabel" && k !== "actual" && k !== "Decision forecast")
                   .map((key, idx) => (
                     <Line
                       key={key}
@@ -515,7 +525,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 {/* Decision Forecast */}
                 <Line
                   type="monotone"
-                  dataKey="Decision Forecast"
+                  dataKey="Decision forecast"
                   stroke="#06b6d4"
                   strokeWidth={3}
                   dot={false}
@@ -525,7 +535,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 <Line
                   type="monotone"
                   dataKey="actual"
-                  name="Actual Outturn"
+                  name="Actual outturn"
                   stroke="#10b981"
                   strokeWidth={2.5}
                   dot={false}
@@ -541,7 +551,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
         <div className="overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/60 shadow-sm backdrop-blur-md">
           <div className="flex items-center justify-between border-b border-slate-800 p-4">
             <div>
-              <h4 className="text-sm font-bold text-white">48 Settlement Periods Breakdown</h4>
+              <h4 className="text-sm font-bold text-white">48 settlement periods breakdown</h4>
               <p className="text-xs text-slate-400">Detailed target outturns, frozen forecasts, and signed procurement errors.</p>
             </div>
             <a
@@ -560,13 +570,13 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               <thead className="sticky top-0 bg-slate-950 text-slate-400">
                 <tr className="border-b border-slate-800">
                   <th className="py-2.5 px-3">SP</th>
-                  <th className="py-2.5 px-3">Target Time (UTC)</th>
+                  <th className="py-2.5 px-3">Target time (UTC)</th>
                   <th className="py-2.5 px-3">Actual (MW)</th>
                   <th className="py-2.5 px-3">Forecast (MW)</th>
                   <th className="py-2.5 px-3">Error (MW)</th>
                   <th className="py-2.5 px-3">Shortfall (MW)</th>
-                  <th className="py-2.5 px-3">Forecast Publish Time</th>
-                  <th className="py-2.5 px-3">Risk Assessment</th>
+                  <th className="py-2.5 px-3">Forecast publish time</th>
+                  <th className="py-2.5 px-3">Risk assessment</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50 text-slate-300">
@@ -598,7 +608,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                       <td className="py-2 px-3">
                         {isShortfall ? (
                           <span className="rounded bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-rose-400 border border-rose-500/20">
-                            Shortfall Risk
+                            Shortfall risk
                           </span>
                         ) : (
                           <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-500/20">

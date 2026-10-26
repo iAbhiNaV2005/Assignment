@@ -5,13 +5,8 @@ import {
   ShieldAlert,
   Calendar,
   Clock,
-  TrendingDown,
-  BarChart,
-  Layers,
-  Sparkles,
   Sliders,
   CheckCircle,
-  HelpCircle,
 } from "lucide-react";
 import {
   LineChart,
@@ -92,6 +87,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               value={fromDate}
               onChange={(e) => e.target.value && setFromDate(e.target.value)}
               className="bg-transparent font-medium focus:outline-none"
+              aria-label="Start date"
             />
             <span className="text-slate-500">to</span>
             <input
@@ -101,20 +97,25 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               value={toDate}
               onChange={(e) => e.target.value && setToDate(e.target.value)}
               className="bg-transparent font-medium focus:outline-none"
+              aria-label="End date"
             />
           </div>
 
           {/* Cutoff control */}
           <div className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs">
             <Clock className="h-4 w-4 text-amber-400" />
-            <span className="text-slate-400">Cutoff:</span>
+            <label htmlFor="accuracy-cutoff" className="text-slate-400">
+              Cutoff:
+            </label>
             <input
+              id="accuracy-cutoff"
               type="text"
               value={cutoffTime}
               onChange={(e) => setCutoffTime(e.target.value)}
               className="w-14 rounded bg-slate-800 px-1 text-center font-bold text-white focus:outline-none"
+              aria-label="Accuracy cutoff time"
             />
-            <span className="text-slate-500">London</span>
+            <span className="text-slate-500">London time</span>
           </div>
 
           {/* Quick preset */}
@@ -125,7 +126,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
             }}
             className="rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-1.5 text-xs text-slate-400 hover:border-slate-700 hover:text-white"
           >
-            Full Month (Jan 2026)
+            Full month (January 2026)
           </button>
         </div>
 
@@ -141,27 +142,27 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
       {/* KPI Cards Row */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <KPICard
-          title="Mean Absolute Error"
+          title="Mean absolute error"
           value={metrics?.mae ? Math.round(metrics.mae).toLocaleString() : null}
           unit="MW"
-          subtitle="Typical Miss"
+          subtitle="Typical miss size"
           badge={{ text: "MAE", variant: "neutral" }}
         />
         <KPICard
-          title="Root Mean Sq Error"
+          title="Root mean square error"
           value={metrics?.rmse ? Math.round(metrics.rmse).toLocaleString() : null}
           unit="MW"
-          subtitle="Large Miss Penalty"
+          subtitle="Large miss penalty"
           badge={{ text: "RMSE", variant: "neutral" }}
         />
         <KPICard
           title="Normalized MAE"
           value={metrics?.nmae ? `${metrics.nmae}%` : null}
-          subtitle="Safe Relative Scale"
+          subtitle="MAE / mean actual"
           badge={{ text: "Scale-free", variant: "info" }}
         />
         <KPICard
-          title="Overall Bias"
+          title="Net forecast bias"
           value={metrics?.bias !== null && metrics?.bias !== undefined ? `${metrics.bias > 0 ? "+" : ""}${Math.round(metrics.bias).toLocaleString()}` : null}
           unit="MW"
           subtitle={metrics?.bias && metrics.bias > 0 ? "Over-prediction" : "Under-prediction"}
@@ -171,17 +172,17 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
           }}
         />
         <KPICard
-          title="Shortfall Risk Share"
+          title="Shortfall risk share"
           value={metrics?.shareOverPct !== null && metrics?.shareOverPct !== undefined ? `${metrics.shareOverPct}%` : null}
-          subtitle="Periods Over-forecast"
+          subtitle="Periods over-forecast"
           badge={{ text: "Shortfall", variant: "danger" }}
         />
         <KPICard
-          title="P95 Peak Abs Error"
+          title="P95 peak error"
           value={metrics?.p95AbsError ? Math.round(metrics.p95AbsError).toLocaleString() : null}
           unit="MW"
-          subtitle="Worst 5% Stress"
-          badge={{ text: "Tail Risk", variant: "warning" }}
+          subtitle="Worst 5% tail stress"
+          badge={{ text: "Tail risk", variant: "warning" }}
         />
       </div>
 
@@ -194,9 +195,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white">Recommended Thermal Procurement Buffer</h3>
+                <h3 className="text-base font-bold text-white">Recommended thermal procurement buffer</h3>
                 <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-300">
-                  Trader Decision Tool
+                  Decision-ready
                 </span>
               </div>
               <p className="mt-0.5 text-xs text-slate-300">
@@ -209,10 +210,13 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
           <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-2">
             <Sliders className="h-4 w-4 text-cyan-400" />
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">Target Confidence:</span>
+              <label htmlFor="confidence-slider" className="text-xs text-slate-400">
+                Target confidence:
+              </label>
               <span className="text-sm font-bold text-white">{bufferPercentile}%</span>
             </div>
             <input
+              id="confidence-slider"
               type="range"
               min="75"
               max="99"
@@ -220,6 +224,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               value={bufferPercentile}
               onChange={(e) => setBufferPercentile(Number(e.target.value))}
               className="h-1.5 w-28 cursor-pointer accent-cyan-400"
+              aria-label="Target confidence percentile"
             />
           </div>
         </div>
@@ -228,8 +233,8 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400">In-Sample Buffer (Full Month)</span>
-              <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">Benchmark</span>
+              <span className="text-xs text-slate-400">In-sample buffer (benchmark)</span>
+              <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">Full window</span>
             </div>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-white">
@@ -244,9 +249,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
 
           <div className="rounded-xl border border-cyan-500/30 bg-cyan-950/20 p-4 shadow-sm shadow-cyan-500/10">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-cyan-300 font-semibold">Walk-Forward Backtested Buffer</span>
+              <span className="text-xs text-cyan-300 font-semibold">Walk-forward backtested buffer</span>
               <span className="rounded bg-cyan-500/20 px-1.5 py-0.5 text-[10px] text-cyan-300 font-bold">
-                Honest Ex-Ante
+                Honest ex-ante
               </span>
             </div>
             <div className="mt-2 flex items-baseline gap-2">
@@ -256,13 +261,13 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               <span className="text-xs text-cyan-300">MW avg</span>
             </div>
             <p className="mt-1 text-[11px] text-slate-400">
-              Strictly calibrated each day using only prior days&apos; historical errors.
+              Calibrated strictly each day using only prior days&apos; historical errors.
             </p>
           </div>
 
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-emerald-300 font-semibold">Achieved Out-of-Sample Coverage</span>
+              <span className="text-xs text-emerald-300 font-semibold">Achieved out-of-sample coverage</span>
               <CheckCircle className="h-4 w-4 text-emerald-400" />
             </div>
             <div className="mt-2 flex items-baseline gap-2">
@@ -287,7 +292,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               activeTab === "daily" ? "bg-slate-800 text-cyan-400" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Daily Error Profile
+            Daily error profile
           </button>
           <button
             onClick={() => setActiveTab("hourly")}
@@ -295,7 +300,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               activeTab === "hourly" ? "bg-slate-800 text-cyan-400" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Diurnal Profile (Hour 0-23)
+            Diurnal cycle (hours 0 to 23)
           </button>
           <button
             onClick={() => setActiveTab("wind")}
@@ -303,7 +308,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               activeTab === "wind" ? "bg-slate-800 text-cyan-400" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Error by Wind Generation Level
+            Performance by wind level
           </button>
           <button
             onClick={() => setActiveTab("distribution")}
@@ -311,7 +316,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               activeTab === "distribution" ? "bg-slate-800 text-cyan-400" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Error Histogram Distribution
+            Signed error distribution
           </button>
           <button
             onClick={() => setActiveTab("horizon")}
@@ -319,7 +324,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               activeTab === "horizon" ? "bg-slate-800 text-cyan-400" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Error vs. Lead Horizon (0-72h)
+            Error vs lead horizon (0 to 72h)
           </button>
         </div>
       </div>
@@ -328,7 +333,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
       {activeTab === "daily" && (
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white">Daily Mean Absolute Error & Net Bias (MW)</h4>
+            <h4 className="text-sm font-bold text-white">Daily mean absolute error and net bias (MW)</h4>
             <p className="text-xs text-slate-400">Day-by-day evolution of forecast error throughout the period.</p>
           </div>
           <div className="h-[360px] w-full">
@@ -342,9 +347,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                <Bar dataKey="mae" name="MAE (Typical Miss)" fill="#06b6d4" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="bias" name="Bias (+Over / -Under)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="shortfallP90" name="P90 Shortfall" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="mae" name="MAE (typical miss)" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="bias" name="Bias (+over / -under)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="shortfallP90" name="P90 shortfall" fill="#ef4444" radius={[4, 4, 0, 0]} />
               </RechartsBarChart>
             </ResponsiveContainer>
           </div>
@@ -355,7 +360,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
       {activeTab === "hourly" && (
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white">Intraday Diurnal Error Cycle (Hours 0 to 23)</h4>
+            <h4 className="text-sm font-bold text-white">Intraday diurnal error cycle (hours 0 to 23)</h4>
             <p className="text-xs text-slate-400">Analysis of whether forecasts systematically degrade during specific hours of the day.</p>
           </div>
           <div className="h-[360px] w-full">
@@ -363,7 +368,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               <LineChart data={hourlyBreakdown} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="hourLabel" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`} />
+                <YAxis stroke="#64748b" fontSize={11} domain={[0, "auto"]} tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "0.75rem" }}
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
@@ -381,7 +386,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
       {activeTab === "wind" && (
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white">Forecast Performance by Actual Wind Generation Level</h4>
+            <h4 className="text-sm font-bold text-white">Forecast performance by actual wind generation level</h4>
             <p className="text-xs text-slate-400">Comparing error metrics across Low (&lt;7 GW), Medium (7-14 GW), and High (&gt;14 GW) output.</p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -390,7 +395,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white">{item.level}</span>
                   <span className="rounded bg-slate-800 px-2 py-0.5 text-[10px] text-slate-300">
-                    {item.pctOfTotal}% of time
+                    {item.pctOfTotal}% of periods
                   </span>
                 </div>
                 <div className="mt-4 space-y-2 text-xs">
@@ -399,7 +404,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                     <span className="font-semibold text-slate-200">{item.periods}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Mean Actual:</span>
+                    <span className="text-slate-400">Mean actual:</span>
                     <span className="font-semibold text-emerald-400">{Math.round(item.meanActual).toLocaleString()} MW</span>
                   </div>
                   <div className="flex justify-between">
@@ -424,8 +429,8 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-bold text-white">Signed Forecast Error Distribution (MW)</h4>
-              <p className="text-xs text-slate-400">Positive error = Over-prediction (Shortfall). Marked with P10, P50, and P90 percentiles.</p>
+              <h4 className="text-sm font-bold text-white">Signed forecast error distribution (MW)</h4>
+              <p className="text-xs text-slate-400">Positive error = Over-prediction (shortfall). Marked with P10, P50, and P90 percentiles.</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
               <span className="text-slate-400">P10: <strong className="text-cyan-400">{metrics?.p10Error} MW</strong></span>
@@ -444,7 +449,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   formatter={(val: any) => [`${val} periods`, "Count"]}
                   labelFormatter={(c) => `Error ~ ${Math.round(Number(c))} MW`}
                 />
-                <ReferenceLine x={0} stroke="#94a3b8" strokeDasharray="2 2" label="Zero Error" />
+                <ReferenceLine x={0} stroke="#94a3b8" strokeDasharray="2 2" label="Zero error" />
                 <Bar dataKey="count" name="Frequency" fill="#06b6d4" radius={[4, 4, 0, 0]} />
               </RechartsBarChart>
             </ResponsiveContainer>
@@ -456,9 +461,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
       {activeTab === "horizon" && (
         <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white">Error vs. Forecast Horizon (Lead Time Ahead of Delivery)</h4>
+            <h4 className="text-sm font-bold text-white">Error vs forecast horizon (lead time ahead of delivery)</h4>
             <p className="text-xs text-slate-400">
-              Evaluates all forecast publishes to demonstrate how forecast accuracy improves as gate closure and delivery approach.
+              Evaluates all forecast publishes to demonstrate how forecast accuracy improves as gate closure approaches.
             </p>
           </div>
           <div className="h-[360px] w-full">
@@ -466,13 +471,13 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
               <RechartsBarChart data={horizonData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="bucket" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v) => `${Math.round(v)} MW`} />
+                <YAxis stroke="#64748b" fontSize={11} domain={[0, "auto"]} tickFormatter={(v) => `${Math.round(v)} MW`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "0.75rem" }}
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                <Bar dataKey="mae" name="MAE (Typical Miss MW)" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="mae" name="MAE (typical miss MW)" fill="#06b6d4" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="rmse" name="RMSE (MW)" fill="#818cf8" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="bias" name="Bias (MW)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
               </RechartsBarChart>
