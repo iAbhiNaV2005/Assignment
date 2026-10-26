@@ -433,6 +433,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#forecastGrad)"
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -441,6 +442,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   stroke="#3fb950"
                   strokeWidth={2.5}
                   dot={false}
+                  isAnimationActive={false}
                 />
                 <Area
                   type="monotone"
@@ -450,6 +452,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   strokeWidth={1}
                   fillOpacity={1}
                   fill="url(#shortfallGrad)"
+                  isAnimationActive={false}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -520,6 +523,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                       strokeWidth={1.5}
                       strokeDasharray="4 4"
                       dot={false}
+                      isAnimationActive={false}
                     />
                   ))}
 
@@ -530,6 +534,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   stroke="#38bdf8"
                   strokeWidth={3}
                   dot={false}
+                  isAnimationActive={false}
                 />
 
                 {/* Actual Outturn */}
@@ -540,6 +545,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                   stroke="#3fb950"
                   strokeWidth={2.5}
                   dot={false}
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>

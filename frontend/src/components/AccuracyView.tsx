@@ -351,9 +351,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                <Bar dataKey="mae" name="MAE (typical miss)" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="bias" name="Bias (+over / -under)" fill="#d29922" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="shortfallP90" name="P90 shortfall" fill="#f85149" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="mae" name="MAE (typical miss)" fill="#38bdf8" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="bias" name="Bias (+over / -under)" fill="#d29922" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="shortfallP90" name="P90 shortfall" fill="#f85149" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </RechartsBarChart>
             </ResponsiveContainer>
           </div>
@@ -381,9 +381,8 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   contentStyle={{ backgroundColor: "#161b22", borderColor: "#30363d", borderRadius: "0.75rem" }}
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
                 />
-                <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                <Line type="monotone" dataKey="mae" name="MAE (MW)" stroke="#38bdf8" strokeWidth={2.5} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="bias" name="Bias (MW)" stroke="#d29922" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="mae" name="MAE (MW)" stroke="#38bdf8" strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} />
+                <Line type="monotone" dataKey="bias" name="Bias (MW)" stroke="#d29922" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -466,7 +465,7 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   labelFormatter={(c) => `Error ~ ${Math.round(Number(c))} MW`}
                 />
                 <ReferenceLine x={0} stroke="#8b949e" strokeDasharray="3 3" label={{ value: "Zero error line", fill: "#8b949e", fontSize: 11 }} />
-                <Bar dataKey="count" name="Frequency" fill="#38bdf8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" name="Frequency" fill="#38bdf8" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </RechartsBarChart>
             </ResponsiveContainer>
           </div>
@@ -495,9 +494,9 @@ export const AccuracyView: React.FC<AccuracyViewProps> = ({
                   formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} MW`, name]}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                <Bar dataKey="mae" name="MAE (typical miss MW)" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="rmse" name="RMSE (MW)" fill="#a371f7" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="bias" name="Bias (MW)" fill="#d29922" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="mae" name="MAE (typical miss MW)" fill="#38bdf8" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="rmse" name="RMSE (MW)" fill="#a371f7" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="bias" name="Bias (MW)" fill="#d29922" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </RechartsBarChart>
             </ResponsiveContainer>
           </div>
