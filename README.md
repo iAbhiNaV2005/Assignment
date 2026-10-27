@@ -6,7 +6,7 @@ An analytical trading desk web application developed for a UK power procurement 
 
 ## 1. Live Deployment & Documentation Links
 
-- **Live Application:** [https://uk-wind-portal.vercel.app](https://uk-wind-portal.vercel.app) *(deploy Project 2 following Section 8)*
+- **Live Application:** [https://frontend-drab-alpha-49.vercel.app](https://frontend-drab-alpha-49.vercel.app)
 - **Live Deployed API:** [https://assignment-mocha-nu.vercel.app](https://assignment-mocha-nu.vercel.app)
 - **Interactive OpenAPI / Swagger Documentation:** [https://assignment-mocha-nu.vercel.app/docs](https://assignment-mocha-nu.vercel.app/docs)
 - **Live Health & Data Coverage Check:** [https://assignment-mocha-nu.vercel.app/api/health](https://assignment-mocha-nu.vercel.app/api/health)
