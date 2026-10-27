@@ -3,7 +3,10 @@
 import os
 import sqlite3
 
-from backend.app.config import settings
+try:
+    from backend.app.config import settings
+except (ImportError, ModuleNotFoundError):
+    from app.config import settings  # type: ignore
 
 
 def get_db_path() -> str:

@@ -10,32 +10,60 @@ import numpy as np
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
-from backend.analysis.metrics import (
-    compute_daily_breakdown,
-    compute_error_histogram,
-    compute_headline_metrics,
-    compute_horizon_analysis,
-    compute_hourly_breakdown,
-    compute_safety_buffer_analysis,
-    compute_wind_level_breakdown,
-)
-from backend.analysis.selection import (
-    compute_cutoff_utc,
-    get_forecast_revisions_for_day,
-    select_decision_forecasts_for_range,
-)
-from backend.app.config import settings
-from backend.app.database import get_db_connection, get_db_path
-from backend.app.schemas import (
-    BufferResponse,
-    ConfigResponse,
-    DecisionResponse,
-    HealthResponse,
-    HistogramBin,
-    HorizonItem,
-    MetricsResponse,
-    RevisionsResponse,
-)
+try:
+    from backend.analysis.metrics import (
+        compute_daily_breakdown,
+        compute_error_histogram,
+        compute_headline_metrics,
+        compute_horizon_analysis,
+        compute_hourly_breakdown,
+        compute_safety_buffer_analysis,
+        compute_wind_level_breakdown,
+    )
+    from backend.analysis.selection import (
+        compute_cutoff_utc,
+        get_forecast_revisions_for_day,
+        select_decision_forecasts_for_range,
+    )
+    from backend.app.config import settings
+    from backend.app.database import get_db_connection, get_db_path
+    from backend.app.schemas import (
+        BufferResponse,
+        ConfigResponse,
+        DecisionResponse,
+        HealthResponse,
+        HistogramBin,
+        HorizonItem,
+        MetricsResponse,
+        RevisionsResponse,
+    )
+except (ImportError, ModuleNotFoundError):
+    from analysis.metrics import (  # type: ignore
+        compute_daily_breakdown,
+        compute_error_histogram,
+        compute_headline_metrics,
+        compute_horizon_analysis,
+        compute_hourly_breakdown,
+        compute_safety_buffer_analysis,
+        compute_wind_level_breakdown,
+    )
+    from analysis.selection import (  # type: ignore
+        compute_cutoff_utc,
+        get_forecast_revisions_for_day,
+        select_decision_forecasts_for_range,
+    )
+    from app.config import settings  # type: ignore
+    from app.database import get_db_connection, get_db_path  # type: ignore
+    from app.schemas import (  # type: ignore
+        BufferResponse,
+        ConfigResponse,
+        DecisionResponse,
+        HealthResponse,
+        HistogramBin,
+        HorizonItem,
+        MetricsResponse,
+        RevisionsResponse,
+    )
 
 router = APIRouter(prefix="/api")
 

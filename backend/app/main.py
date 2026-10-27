@@ -4,8 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from backend.app.config import settings
-from backend.app.routes import router
+try:
+    from backend.app.config import settings
+    from backend.app.routes import router
+except (ImportError, ModuleNotFoundError):
+    from app.config import settings  # type: ignore
+    from app.routes import router  # type: ignore
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
