@@ -22,6 +22,6 @@ except ImportError:
     backend_pkg.__path__ = [BASE_DIR]
     sys.modules["backend"] = backend_pkg
 
-from backend.app.main import app  # noqa: E402, F401
+from backend.app.main import app
 
 __all__ = ["app"]

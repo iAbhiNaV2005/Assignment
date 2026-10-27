@@ -1,7 +1,6 @@
 """Backend configuration settings."""
 
 import os
-from typing import ClassVar
 
 
 class Settings:
