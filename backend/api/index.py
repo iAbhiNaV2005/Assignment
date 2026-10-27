@@ -9,6 +9,9 @@ BACKEND_DIR = os.path.dirname(CURRENT_DIR)
 if BACKEND_DIR not in sys.path:
     sys.path.insert(0, BACKEND_DIR)
 
-from main import app
+from app.main import app
 
-__all__ = ["app"]
+application = app
+handler = app
+
+__all__ = ["app", "application", "handler"]
