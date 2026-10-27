@@ -6,8 +6,10 @@ An analytical trading desk web application developed for a UK power procurement 
 
 ## 1. Live Deployment & Documentation Links
 
-- **Live Application:** [https://uk-wind-portal.vercel.app](https://uk-wind-portal.vercel.app) *(or deployed Heroku/Render endpoint)*
-- **Interactive OpenAPI / Swagger Documentation:** `http://localhost:8000/docs` (or `/docs` on deployed backend)
+- **Live Application:** [https://uk-wind-portal.vercel.app](https://uk-wind-portal.vercel.app) *(deploy Project 2 following Section 8)*
+- **Live Deployed API:** [https://assignment-mocha-nu.vercel.app](https://assignment-mocha-nu.vercel.app)
+- **Interactive OpenAPI / Swagger Documentation:** [https://assignment-mocha-nu.vercel.app/docs](https://assignment-mocha-nu.vercel.app/docs)
+- **Live Health & Data Coverage Check:** [https://assignment-mocha-nu.vercel.app/api/health](https://assignment-mocha-nu.vercel.app/api/health)
 - **Video Walkthrough (Customer Pitch & Tech Lead Review):** [Unlisted YouTube Video Link](https://sites.uab.edu/apex/for-mph-students/youtube-video/) *(See `docs/VIDEO_SCRIPTS.md` for full scripts and shot list)*
 
 ---
