@@ -10,7 +10,7 @@ An analytical trading desk web application developed for a UK power procurement 
 - **Live Deployed API:** [https://assignment-mocha-nu.vercel.app](https://assignment-mocha-nu.vercel.app)
 - **Interactive OpenAPI / Swagger Documentation:** [https://assignment-mocha-nu.vercel.app/docs](https://assignment-mocha-nu.vercel.app/docs)
 - **Live Health & Data Coverage Check:** [https://assignment-mocha-nu.vercel.app/api/health](https://assignment-mocha-nu.vercel.app/api/health)
-- **Video Walkthrough (Customer Pitch & Tech Lead Review):** [Unlisted YouTube Video Link](https://sites.uab.edu/apex/for-mph-students/youtube-video/) *(See `docs/VIDEO_SCRIPTS.md` for full scripts and shot list)*
+- **Video Walkthrough (Customer Pitch & Tech Lead Review):** [https://youtu.be/RmhHPQ3Dz0o](https://youtu.be/RmhHPQ3Dz0o) *(See `docs/VIDEO_SCRIPTS.md` for full scripts and shot list)*
 
 ---
 
@@ -153,8 +153,8 @@ This fetches:
 
 1. **The Anti-Leakage Selection Rule:**
    For any delivery target half-hour $T$ on delivery day $D$:
-   $$\text{Cutoff}(D) = (D - 1\text{ day}) \text{ at } \text{CUTOFF\_LOCAL} \text{ (Europe/London)}$$
-   $$\text{forecast}(T) = \operatorname{argmax}_{publishTime \le \text{Cutoff}(D)} \text{WINDFOR}(startTime = T)$$
+   $$\text{Cutoff}(D) = (D - 1\text{ day}) \text{ at } \text{Cutoff}_{\text{local}} \text{ (Europe/London)}$$
+   $$\text{forecast}(T) = \mathrm{argmax}_{\text{publishTime} \le \text{Cutoff}(D)} \text{WINDFOR}(\text{startTime} = T)$$
    Forecasts published after the cutoff time are strictly excluded because they were physically unavailable to the trader at gate closure.
 
 2. **Temporal Alignment:**
@@ -265,7 +265,6 @@ Push this repository to GitHub (e.g. `https://github.com/iAbhiNaV2005/Assignment
 - **Entrypoint Discovery:** `backend/main.py`, `backend/app/main.py`, `backend/pyproject.toml` (`tool.vercel.entrypoint = "main.py"`), and `backend/vercel.json` are pre-wired to guarantee Vercel locates the FastAPI application instance.
 - **Universal Vercel CORS:** `backend/app/main.py` is configured with `allow_origin_regex=r"^https:\/\/.*\.vercel\.app$"`, allowing preview, staging, and production frontend deployments to communicate seamlessly without manual CORS updates.
 - **Cold Start Warm-Up:** The first request after idle spins up the serverless Python environment (1–2s). Subsequent analytical queries resolve in 10–50ms.
-
 
 ---
 
