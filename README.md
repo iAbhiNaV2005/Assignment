@@ -10,7 +10,7 @@ An analytical trading desk web application developed for a UK power procurement 
 - **Live Deployed API:** [https://assignment-mocha-nu.vercel.app](https://assignment-mocha-nu.vercel.app)
 - **Interactive OpenAPI / Swagger Documentation:** [https://assignment-mocha-nu.vercel.app/docs](https://assignment-mocha-nu.vercel.app/docs)
 - **Live Health & Data Coverage Check:** [https://assignment-mocha-nu.vercel.app/api/health](https://assignment-mocha-nu.vercel.app/api/health)
-- **Video Walkthrough (Customer Pitch & Tech Lead Review):** [https://youtu.be/RmhHPQ3Dz0o](https://youtu.be/RmhHPQ3Dz0o) *(See `docs/VIDEO_SCRIPTS.md` for full scripts and shot list)*
+- **Video Walkthrough (Customer Pitch & Tech Lead Review):** [https://youtu.be/RmhHPQ3Dz0o](https://youtu.be/RmhHPQ3Dz0o) 
 
 ---
 
